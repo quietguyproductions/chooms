@@ -15,8 +15,6 @@ def extract_char_position(error_message: str) -> int:
     Returns:
         int: The character position.
     """
-    import re
-
     char_pattern = re.compile(r'\(char (\d+)\)')
     if match := char_pattern.search(error_message):
         return int(match[1])
@@ -47,7 +45,7 @@ def add_quotes_to_property_names(json_string: str) -> str:
         json.loads(corrected_json_string)
         return corrected_json_string
     except json.JSONDecodeError as e:
-        raise e
+        raise ValueError(f"Failed to add quotes to property names. Original error message: {str(e)}")
 
 
 def balance_braces(json_string: str) -> str:
@@ -76,7 +74,7 @@ def balance_braces(json_string: str) -> str:
         json.loads(json_string)
         return json_string
     except json.JSONDecodeError as e:
-        raise e
+        raise ValueError(f"Failed to balance braces. Original error message: {str(e)}")
 
 
 def fix_invalid_escape(json_str: str, error_message: str) -> str:
@@ -91,7 +89,7 @@ def fix_invalid_escape(json_str: str, error_message: str) -> str:
             if cfg.debug:
                 print('json loads error - fix invalid escape', e)
             error_message = str(e)
-    return json_str
+    raise ValueError(f"Failed to fix invalid escape. Original error message: {error_message}")
 
 
 def correct_json(json_str: str) -> str:
@@ -100,6 +98,9 @@ def correct_json(json_str: str) -> str:
 
     Args:
         json_str (str): The JSON string.
+
+    Returns:
+        str: The corrected JSON string.
     """
 
     try:
@@ -118,10 +119,4 @@ def correct_json(json_str: str) -> str:
             try:
                 json.loads(json_str)
                 return json_str
-            except json.JSONDecodeError as e:
-                if cfg.debug:
-                    print('json loads error - add quotes', e)
-                error_message = str(e)
-        if balanced_str := balance_braces(json_str):
-            return balanced_str
-    return json_str
+            except json.JSONDecodeError
